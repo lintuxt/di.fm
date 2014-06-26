@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+
+import urllib2
+import json
+import pygst
+import gst
+
+def on_tag(bus, msg):
+    taglist = msg.parse_tag()
+    print 'on_tag:'
+    for key in taglist.keys():
+        print '\t%s = %s' % (key, taglist[key])
+
+def intTryParse(value):
+  try:
+    return int(value), True
+  except ValueError:
+    return value, False
+
+print 'di.fm player by @lintuxt'
+print '[+] loading styles ...'
+web_service_url = 'http://listen.di.fm/public3'
+json_response = urllib2.urlopen(web_service_url)
+json_decoded = json.load(json_response)
+print '[+] enter style name pattern:',
+stylename = raw_input()
+print '[+] searching ...'
+styles_matched = []
+index = 0
+for k in json_decoded:
+  if stylename in k['name'].encode('utf-8').replace(' ','').lower():
+    print '  ' + str(index) + ': => ' + k['name']
+    styles_matched.append(k['playlist'])
+    index += 1
+print '[+] enter number: ',
+number_selected = raw_input()
+number_selected, parsed = intTryParse(number_selected)
+if(not(parsed) or number_selected < 0 or number_selected > index-1):
+  print 'haha ... so funny, exiting!'
+  exit(-1)
+print '[+] downloading playlist ...'
+url_to_dwl = styles_matched[number_selected]
+raw_playlist = urllib2.urlopen(url_to_dwl).read()
+stations = []
+for k in raw_playlist.split('\n'):
+  if 'File' in k:
+    stations.append(k.strip()[6:])
+
+#our stream to play
+music_stream_uri = stations[0]
+
+#creates a playbin (plays media form an uri)
+player = gst.element_factory_make("playbin", "player")
+
+#set the uri
+player.set_property('uri', music_stream_uri)
+
+#start playing
+player.set_state(gst.STATE_PLAYING)
+
+#listen for tags on the message bus; tag event might be called more than once
+bus = player.get_bus()
+bus.enable_sync_message_emission()
+bus.add_signal_watch()
+bus.connect('message::tag', on_tag)
+
+#wait and let the music play
+raw_input('Press enter to stop playing...')
