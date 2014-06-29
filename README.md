@@ -6,16 +6,15 @@ This is a python script to play streaming music from Digitally Imported (free ve
 
 Requirements:
 --
-  - gstreamer0.10-plugins-\*
+  - wget and mplayer
   - python v-2.7.3
-  - a good sound quality for blowing your head off!
+  - a good sound quality for blowing your mind!
 
 Installation:
 --
 ```bash
-    sudo apt-get install gstreamer0.10-plugins-good
-    sudo apt-get install gstreamer0.10-plugins-bad
-    sudo apt-get install gstreamer0.10-plugins-ugly
+    sudo apt-get install wget
+    sudo apt-get install mplayer
     git clone git@github.com:lintuxt/di.fm.git di.fm
     cd di.fm
     chmod +x di.fm
@@ -24,7 +23,7 @@ Installation:
 
 Version:
 --
-0.0.1
+0.0.5
 
 License
 --
