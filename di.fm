@@ -6,12 +6,6 @@ import prompt
 import sort
 import os
 
-def intTryParse(value):
-  try:
-    return int(value), True
-  except ValueError:
-    return value, False
-
 class DigitallyImported:
   def __init__(self, web_service_url = 'http://listen.di.fm/public3'):
     self.__web_service_url = web_service_url
