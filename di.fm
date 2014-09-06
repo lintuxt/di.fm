@@ -3,6 +3,7 @@
 import urllib2
 import json
 import prompt
+import re
 import sort
 import os
 
@@ -38,7 +39,8 @@ class DigitallyImported:
       if (station == ''):
         print '[-] aborting ...'
         break
-      if station in k['key']:
+      pattern = re.compile('^'+station)
+      if not(re.match(pattern, k['key']) == None):
         print '[+] downloading playlist: ' + k['name']
         url_to_dwl = k['playlist']
         os.system('wget ' + url_to_dwl + ' -O to_play.pls' )
